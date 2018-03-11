@@ -12,7 +12,7 @@ app.use('/public', express.static(path.join(__dirname,'../dist')));//标志这�
 //截取所有服务端发送过来的get请求
 app.get('*',function(req,res){
     const appString = ReactSSR.renderToString(serverEntry);
-    res.send(template.replace('<app></app>',appString));
+    res.send(template.replace('<!-- app -->',appString));
 });
 
 app.listen(3002,function(){
