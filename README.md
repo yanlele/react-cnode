@@ -301,6 +301,17 @@ ReactDOM.hydrate(<App/>, document.getElementById('root'));
 ```
 
 最后需要安装webpack-dev-server 然后配置package.json 启动项
+```json
+  "scripts" : {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:client": "webpack --config build/webpack.config.client.js",
+    "build:server": "webpack --config build/webpack.config.server.js",
+    "dev:client": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.client.js",
+    "clear": "rimraf dist",
+    "build": "npm run clear && npm run build:client && npm run build:server",
+    "start": "node server/server.js"
+  }
+```
 
 备注：有两个地方需要优化的       
 1、如果我们用webpack-dev-server来启动服务，配置渲染的时候要用render，如果用服务端来渲染页面，要用hydrate；   
