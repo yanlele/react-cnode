@@ -1,8 +1,8 @@
 # 项目实战二：Webpack + React全栈工程架构项目实战精讲
 
 ## 目录
-- [一、工程架构](#一、工程架构：)
-    - [1、webapp 架构简介](#classone)
+- [一、工程架构](#classone)
+    - [1、webapp 架构简介](#classone-item1)
     - [2、web开发常用网络优化](#2、web开发常用网络优化)
     - [3、webpack 的基础配置](#3、webpack-的基础配置)
     - [4、webpack loader的基本使用](#4、webpack-loader的基本使用)
@@ -10,7 +10,7 @@
 
 
 ## <div id='classone'>一、工程架构：</div>
-### 1、webapp 架构简介
+### <div id='classone-item1'>1、webapp 架构简介</div>
 工程架构：解放生产力、围绕解决方案搭建环境、保证项目质量
 - 解放生产力：源代码处理；自动打包自动更新页面显示；自动处理图片依赖，保证开发和正式环境的统一
 - 围绕解决方案搭建环境：不同的前段框架需要不同的运行架构；预期可能出现的问题并规避；
@@ -18,10 +18,10 @@
 
 项目架构：技术选型、数据解决方案、整体代码风格
 
-### 2、web开发常用网络优化
+### <div id='classone-item2'>2、web开发常用网络优化</div>
 优化方案：合并资源文件，减少HTTP请求；压缩资源文件较少请求大小；合理利用缓存机制
 
-### 3、webpack 的基础配置
+### <div id='classone-item3'>3、webpack 的基础配置</div>
 ```javascript
 const path=require('path');
 
@@ -43,7 +43,7 @@ module.exports={
   },
 ```
 
-### 4、webpack loader的基本使用
+### <div id='classone-item4'>4、webpack loader的基本使用</div>
 webpack 的loader的基本配置
 ```javascript
 module: {
@@ -101,7 +101,7 @@ new CleanWebpackPlugin(
 ```
 
 
-### 5、服务端渲染的基础配置
+### <div id='classone-item5'>5、服务端渲染的基础配置</div>
 单页应用存在的问题：SEO不友好；首次请求等待时间比较长，体验不好；          
 
 - 5.1、基础配置：
@@ -261,17 +261,10 @@ app.use('/public', express.static(path.join(__dirname,'../dist')));//标志这�
 ```javascript
 ReactDOM.hydrate(<App/>, document.getElementById('root'));
 ```
-最后重新打包和运行项目就可以大功告成了！
+最后重新打包和运行项目就可以大功告成了！            
 
-
-
-
-
-
-
-
-
-
+在此有一个非常坑爹的地方：
+在template.html 中,body里面 `<div id="root"><app></app></div>` 一定不能留空格，要不然会抛出警告
 
 
 
