@@ -267,7 +267,40 @@ ReactDOM.hydrate(<App/>, document.getElementById('root'));
 在template.html 中,body里面 `<div id="root"><app></app></div>` 一定不能留空格，要不然会抛出警告
 
 
+### <div id='classone-item6'>6、webpack-dev-server配置</div>
+- 项目开发时的常用配置
+常用配置：webpack-dev-server; Hot-module-replacement; 
 
+- 在webpack.config.client.js 中添加配置项
+首先第一步是判断当前环境是开发环境还是线上环境，这一步是在package.json中配置出来的。        
+通过这样的配置实现： `cross-env NODE_ENV=development ......`            
+在webpack.config.client.js中：
+```javascript
+    //区分开发环境和线上环境
+    const isDev=precess.env.NODE_ENV==='development';
+    
+    const config = {...这里是webpack的基本配置};
+    
+    if(isDev){
+        config.devServer = {
+            host:'localhost',
+            port:'3003',
+            contentBase:path.join(__dirname,'../dist'), //启动本地资源的路径
+            hot:false,   //资源热加载
+            overlay:{
+                errors:true //如果在编译中出现错误，就直接在浏览器中显示出来
+            },
+            publicPath:'/public',   //通过public 前缀访问静态资源文件
+            historyApiFallback:{
+                index:'/public/index.html'  //如果404，全部都直接返回public/index.html
+            }
+        }
+    }
+    
+    module.exports=config;
+```
+
+最后需要安装webpack-dev-server 然后配置package.json 启动项
 
 
 
