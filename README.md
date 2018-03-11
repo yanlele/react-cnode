@@ -203,9 +203,7 @@ package.json配置如下:
 在client目录下面，新建一个template.html文件     
 body下面内容如下      
 ```html
-<div id="root">
-    <app></app>
-</div>
+<div id="root"><app></app></div>
 ```
 
 接下来我们要修改client目录下面app.js文件渲染位置和路径
@@ -257,10 +255,13 @@ app.use('/public', express.static(path.join(__dirname,'../dist')));//标志这�
 ```
 
 同时修改两个webpack 配置文件里面的output配置项下面加入如下内容
-`publicPath: "/public",//前缀区分资源`
+`publicPath: "/public",`
 
-
-
+最后在app.js中，使用服务端的渲染方法：
+```javascript
+ReactDOM.hydrate(<App/>, document.getElementById('root'));
+```
+最后重新打包和运行项目就可以大功告成了！
 
 
 
