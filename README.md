@@ -46,25 +46,26 @@ module.exports={
 ### 4、webpack loader的基本使用
 webpack 的loader的基本配置
 ```javascript
- module: {
-        rules: [
-            {
-                test: /\.jsx?$/,
-                loader: "babel-loader", //具体配置转接到.babelrc文件中去了
-                exclude: /node_modules/ //忽略这个目录下的文件使用
-            },
-            {
-                test:/\.js?&/,//让js文件也能够使用babel，而且不包含node_modules文件下面的js
-                loader: "babel-loader",
-                exclude:[
-                    path.join(__dirname,'../node_modules')
-                ]
-            }
-        ]
-    },
-    plugins: [
-        new HTMLPlugin()
+module: {
+    rules: [
+        {
+            test: /\.jsx?$/,
+            loader: "babel-loader", //具体配置转接到.babelrc文件中去了
+            exclude: /node_modules/ //忽略这个目录下的文件使用
+        },
+        {
+            test:/\.js?&/,//让js文件也能够使用babel，而且不包含node_modules文件下面的js
+            loader: "babel-loader",
+            exclude:[
+                path.join(__dirname,'../node_modules')
+            ]
+        }
     ]
+},
+plugins: [
+    new HTMLPlugin()
+]
+    
 ```
 
 补充：[Webpack 删除重复文件的一种优化思路](http://blog.csdn.net/lichking11/article/details/78742066)
@@ -103,7 +104,7 @@ new CleanWebpackPlugin(
 ### 5、服务端渲染的基础配置
 单页应用存在的问题：SEO不友好；首次请求等待时间比较长，体验不好；          
 
-基础配置：
+- 5.1、基础配置：
 因为在服务端我们是没有document.body之类的配置的，所以我们要在client重新新建一个入口js取名字叫server-entry.js
 这个文件里面做的就是引用react组件然后抛出出去
 ```javascript
@@ -157,6 +158,98 @@ package.json配置如下:
     "build": "npm run clear && npm run build:client && npm run build:server"
   },
 ```
+
+自此，服务端渲染的基本配置已经完成，接下来是服务端程序的编写：     
+
+- 5.2、服务端渲染服务端程序的编写(基于express)
+首先先安装express: `npm install express --save`          
+然后再项目根目录创建目录server,在server目录下面创建server.js的文件，并写上服务端渲染的基本的代码
+```javascript
+    const express = require('express');
+    const ReactSSR = require('react-dom/server');//react-dom的服务端渲染模块
+    const serverEntry = require('../dist/server-entry').default;//打包编译之服务端渲染容器,这个地方一定要注意加default
+    
+    const app=express();
+    
+    //截取所有服务端发送过来的get请求
+    app.get('*',function(req,res){
+        const appString = ReactSSR.renderToString(serverEntry);
+        res.send(appString);
+    });
+    
+    app.listen(3002,function(){
+        console.log('server is start and listen port 3002')
+    });
+```
+最后在把启动项配置到package.json 的 script中去：
+```json
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:client": "webpack --config build/webpack.config.client.js",
+    "build:server": "webpack --config build/webpack.config.server.js",
+    "clear": "rimraf dist",
+    "build": "npm run clear && npm run build:client && npm run build:server",
+    "start": "node server/server.js"
+  }
+```
+这个时候启动应该会报错：    
+`Invariant Violation: Objects are not valid as a React child (found: object with keys {default}). If you meant to render a collection of children, use an array instead.null`       
+这个时候一定要注意：
+`const serverEntry = require('../dist/server-entry').default;//打包编译之服务端渲染容器,这个地方一定要注意加default`
+
+接下来再启动服务，访问3002端口，就可以看到我们服务端渲染的内容了，但是这个时候也只有纯的html 并没有我们的其他的script和style文件，换句话说，这个就相当于一个服务端渲染出来的纯html,这个显然是有问题的。接下来就是我们的改造和优化阶段         
+
+- 5.3、服务端渲染的改造和优化
+在client目录下面，新建一个template.html文件     
+body下面内容如下      
+```html
+<div id="root">
+    <app></app>
+</div>
+```
+
+接下来我们要修改client目录下面app.js文件渲染位置和路径
+```javascript
+ReactDOM.render(< App/>, document.getElementById('root'))
+```
+
+最后修改客户端webpack.config.client.js中的配置HTMLPlugin,修改如下：
+```javascript
+    plugins: [
+        new HTMLPlugin({
+            template:path.join(__dirname,'../client/template.html')
+        })
+    ]
+```
+这里的意思是让我们的client/template.html作为模板生成html ，然后把打包后的文件插入到生成的html文件中去
+
+
+然后服务端修改server/server.js如下:
+```javascript
+    const express = require('express');
+    const ReactSSR = require('react-dom/server');//react-dom的服务端渲染模块
+    const fs = require('fs');
+    const path = require('path');
+    const serverEntry = require('../dist/server-entry').default;//打包编译之服务端渲染容器
+    
+    const template = fs.readFileSync(path.join(__dirname,'../dist/index.html'),'utf8');//读取文件模板
+    
+    const app=express();
+    
+    //截取所有服务端发送过来的get请求
+    app.get('*',function(req,res){
+        const appString = ReactSSR.renderToString(serverEntry);
+        res.send(template.replace('<app></app>',appString));//重新替换模板之后，发送给浏览器
+    });
+    
+    app.listen(3002,function(){
+        console.log('server is start and listen port 3002')
+    });
+```
+
+接下来重新打包，重新启动服务，访问3002服务端渲染完成！但是我们发现一个问题，js返回的内容还是localhost:3002的内容，这个就有问题了，接下来是我们的修复方案
+
+- 5.4、服务端渲染的修复（解决其他资源返回相同内容的问题）
 
 
 
