@@ -8,7 +8,7 @@ module.exports = {
     output: {
         filename: "[name].[hash].js",//打包输出文件名：[name]表示入口文件名
         path: path.join(__dirname, '../dist'),//文件输出位置
-        publicPath: "",//前缀区分资源
+        publicPath: "/public",//前缀区分资源
     },
     module: {
         rules: [

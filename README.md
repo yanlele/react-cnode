@@ -250,6 +250,15 @@ ReactDOM.render(< App/>, document.getElementById('root'))
 接下来重新打包，重新启动服务，访问3002服务端渲染完成！但是我们发现一个问题，js返回的内容还是localhost:3002的内容，这个就有问题了，接下来是我们的修复方案
 
 - 5.4、服务端渲染的修复（解决其他资源返回相同内容的问题）
+修改server/server.js  主要是为了区分静态资源内容和服务端加载资源内容
+```javascript
+const app=express();
+app.use('/public', express.static(path.join(__dirname,'../dist')));//标志这个路径下面我们加载的是静态资源的内容
+```
+
+同时修改两个webpack 配置文件里面的output配置项下面加入如下内容
+`publicPath: "/public",//前缀区分资源`
+
 
 
 
