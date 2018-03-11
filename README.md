@@ -302,6 +302,10 @@ ReactDOM.hydrate(<App/>, document.getElementById('root'));
 
 最后需要安装webpack-dev-server 然后配置package.json 启动项
 
+备注：有两个地方需要优化的       
+1、如果我们用webpack-dev-server来启动服务，配置渲染的时候要用render，如果用服务端来渲染页面，要用hydrate；   
+2、template.html 中替换渲染内容可以改为<!-- app -->
+
 
 
 
