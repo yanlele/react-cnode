@@ -12,3 +12,23 @@
 优化方案：合并资源文件，减少HTTP请求；压缩资源文件较少请求大小；合理利用缓存机制
 
 ### 3、webpack 的基础配置
+```javascript
+const path=require('path');
+
+module.exports={
+    entry:{
+        app:path.join(__dirname,'../client/app.js')//打包入口文件
+    },
+    output: {
+        filename: "[name].[hash].js",//打包输出文件名：[name]表示入口文件名
+        path: path.join(__dirname,'../dist'),//文件输出位置
+        publicPath: "",//前缀区分资源
+    }
+};
+```
+运行的时候，可以配置package.js
+```json
+  "scripts": {
+    "build": "webpack --config build/webpack.config.js"
+  },
+```
