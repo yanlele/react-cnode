@@ -32,3 +32,5 @@ module.exports={
     "build": "webpack --config build/webpack.config.js"
   },
 ```
+
+### 4、webpack loader的基本使用
