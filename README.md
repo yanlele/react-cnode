@@ -355,5 +355,25 @@ ReactDOM.hydrate(<App/>, document.getElementById('root'));
 [具体代码请见这里](./server)
 
 最后修改package.json文件
+```json
+"scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:client": "webpack --config build/webpack.config.client.js",
+    "build:server": "webpack --config build/webpack.config.server.js",
+    "dev:client": "cross-env NODE_ENV=development webpack-dev-server --config build/webpack.config.client.js",
+    "dev:server": "cross-env NODE_ENV=development node server/server.js",
+    "clear": "rimraf dist",
+    "build": "npm run clear && npm run build:client && npm run build:server"
+  }
+```
+基本上可以前后webpack 服务都可以跑起来了，但是还是有一个问题！
+后端会报错，以为开发过程中，没有静态资源的概念，所以接下来就是处理这个问题的过程.
+
+安装模块 `http-proxy-middleware` 然后再dev-static中使用起来
+```javascript
+app.use('/public',proxy({
+    target:'http://localhost:3003'
+}))
+```
 
 

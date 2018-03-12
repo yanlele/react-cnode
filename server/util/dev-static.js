@@ -2,6 +2,7 @@ const axios=require('axios');
 const path = require('path');
 const webpack = require('webpack');
 const MemoryFs = require('memory-fs');//可以读取内存中的文件
+const proxy = require('http-proxy-middleware');
 const ReactDomServer = require('react-dom/server');
 
 const serverConfig = require('../../build/webpack.config.server');
@@ -42,10 +43,15 @@ serverCompiler.watch({},(err,stats)=>{
     const bundle = mfs.readFileSync(bundlePath,'utf-8');
     const m = new Module();
     m._compile(bundle,'server-entry.js');//让module来解析我们内存获得的bundle
-    serverBundle = m.default;
+    serverBundle = m.exports.default;
 });
 
 module.exports=function(app){
+
+    app.use('/public',proxy({
+        target:'http://localhost:3003'
+    }))
+
     app.get('*',function(req,res){
         getTemplate().then(template=>{
             const content = ReactDomServer.renderToString(serverBundle);

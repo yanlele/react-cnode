@@ -12,7 +12,7 @@ const config = {
     output: {
         filename: "[name].[hash].js",//打包输出文件名：[name]表示入口文件名
         path: path.join(__dirname, '../dist'),//文件输出位置
-        publicPath: "/public",//前缀区分资源
+        publicPath: "/public/",//前缀区分资源
     },
     module: {
         rules: [
@@ -53,7 +53,7 @@ if(isDev){
         overlay:{
             errors:true //如果在编译中出现错误，就直接在浏览器中显示出来
         },
-        publicPath:'/public',   //通过public 前缀访问静态资源文件
+        publicPath:'/public/',   //通过public 前缀访问静态资源文件
         historyApiFallback:{
             index:'/public/index.html'  //如果404，全部都直接返回public/index.html
         }
