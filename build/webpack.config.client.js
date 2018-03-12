@@ -1,4 +1,5 @@
 const path = require('path');
+const webapck=require('webpack');
 const HTMLPlugin=require('html-webpack-plugin');//这个插件可以自动生成html文件，并且把我们编译好的js文件引入进去
 
 //区分开发环境和线上环境
@@ -37,11 +38,18 @@ const config = {
 };
 
 if(isDev){
+    config.entry={
+        app:[
+            'react-hot-loader/patch',
+            path.join(__dirname, '../client/app.js')
+        ]
+    };
+
     config.devServer = {
         host:'localhost',
         port:'3003',
         contentBase:path.join(__dirname,'../dist'), //启动本地资源的路径
-        hot:false,   //资源热加载
+        hot:true,   //资源热加载
         overlay:{
             errors:true //如果在编译中出现错误，就直接在浏览器中显示出来
         },
@@ -49,7 +57,9 @@ if(isDev){
         historyApiFallback:{
             index:'/public/index.html'  //如果404，全部都直接返回public/index.html
         }
-    }
+    };
+
+    config.plugins.push(new webapck.HotModuleReplacementPlugin())
 }
 
 module.exports=config;

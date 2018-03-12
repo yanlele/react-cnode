@@ -318,9 +318,35 @@ ReactDOM.hydrate(<App/>, document.getElementById('root'));
 2、template.html 中替换渲染内容可以改为<!-- app -->
 
 
+### <div id='classone-item6'>7、hot-module-replacement配置</div>
+首先要在.babelrc文件下面加一段配置 `"plugins": ["react-hot-loader/babel"]` 同时还需要安装最新的包文件：    
+`npm install react-hot-loader@next --save-dev`      
+然后更改app.js中的配置：     
+```javascript
+    import React from 'react'
+    import ReactDOM from 'react-dom'
+    
+    import App from './App.jsx'
+    
+    // ReactDOM.render(< App/>, document.getElementById('root'));
+    ReactDOM.hydrate(<App/>, document.getElementById('root'));
+    
+    if(module.hot){
+        module.hot.accept('./App.jsx',()=>{
+            const NextApp=require('./App.jsx').default;
+            ReactDOM.hydrate(<NextApp/>, document.getElementById('root'));
+        })
+    }
+```
 
+这个时候其实项目已经可以启动了，但是还有后续的配置项目         
+来到webapck.config.js文件中      
+在devServer配置项中开启hot模式：hot:true      
+同时在config配置中我们再push一个插件: `config.plugins.push(new webapck.HotModuleReplacementPlugin())`         
+在到app.js 文件中共引用 `import {AppContainer} from 'react-hot-loader'`，用AppContainer包裹我们的App组件和NextApp组件   
+具体实现方法见app.js   
+自此HotModuleReplacement配置基本完成，可以实现无页面刷新的dom更新了！
 
+注意：！如果出现了还是不能无刷新更新dom，错误的原因可能出现在webpack.config.client.js 配置中output的publicPath,建议这么写 `publicPath='/public/'`
 
-
-
-
+### <div id='classone-item6'>8、开发时的服务端渲染</div>
