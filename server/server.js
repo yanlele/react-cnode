@@ -5,7 +5,7 @@ const path = require('path');
 
 
 //判断开发环境
-const isDev=precess.env.NODE_ENV==='development';
+const isDev=process.env.NODE_ENV==='development';
 
 const app=express();
 

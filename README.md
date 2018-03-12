@@ -351,6 +351,9 @@ ReactDOM.hydrate(<App/>, document.getElementById('root'));
 
 ### <div id='classone-item6'>8、开发时的服务端渲染</div>
 首先同样的方式要在开服务端server/server.js里面判断是否是开发环境,然后分别对是开发模式和不是开发模式进行不同的判断和运行不同的代码流程。
-其中非开发模式，可以直接写在server.js里面，如果开发模式，因为涉及到的情况非常复杂，所以我们再server目录下面新建一个util文件目录，存放我们复杂逻辑的代码和工具类。
+其中非开发模式，可以直接写在server.js里面，如果开发模式，因为涉及到的情况非常复杂，所以我们再server目录下面新建一个util文件目录，存放我们复杂逻辑的代码和工具类。      
+[具体代码请见这里](./server)
+
+最后修改package.json文件
 
 
