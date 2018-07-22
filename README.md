@@ -404,6 +404,17 @@ eslint: 首先我们要安装eslint `npm install eslint --save-dev`
 }
 ```
 接下来我们要安装解析模块：   
+npm install babel-eslint                
+npm install airbnb              
+npm install eslint-config-standard                   
+npm install eslint-loader           
+npm install eslint-plugin-import                
+npm install eslint-plugin-jsx-ally          
+npm install eslint-plugin-node              
+npm install eslint-plugin-promise               
+npm install eslint-plugin-react             
+npm install eslint-standard
+
 
 然后我们还需要在webpack中用eslint-loader来解析代码，在babel编译之前解析：           
 ```
@@ -412,7 +423,10 @@ eslint: 首先我们要安装eslint `npm install eslint --save-dev`
             {
                 enforce: "pre",
                 test: /.{js|jsx}$/,
-                loader: 'eslint-loader'
+                loader: 'eslint-loader',
+                exclude: [
+                    path.resolve(__dirname, '../node_modules')
+                ]
             },
             {
                 test: /\.jsx?$/,

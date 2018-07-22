@@ -19,7 +19,10 @@ const config = {
             {
                 enforce: "pre",
                 test: /.{js|jsx}$/,
-                loader: 'eslint-loader'
+                loader: 'eslint-loader',
+                exclude: [
+                    path.resolve(__dirname, '../node_modules')
+                ]
             },
             {
                 test: /\.jsx?$/,
