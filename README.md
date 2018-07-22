@@ -10,6 +10,7 @@
     - [6、webpack-dev-server配置](#classone-item6)
     - [7、hot-module-replacement配置](#classone-item7)
     - [8、开发时的服务端渲染](#classone-item8)
+    - [9、eslint和editorconfig规范代码](#classone-item9)
 
 
 ## <div id='classone'>一、工程架构：</div>
@@ -378,5 +379,56 @@ app.use('/public',proxy({
     target:'http://localhost:3003'
 }))
 ```
+
+### <div id='classone-item9'>9、eslint和editorconfig规范代码</div>
+editorconfig：不同的编辑器对文本的格式会有移动的区别，这个东西可以让我们在不同编辑器统一代码规范
+
+eslint: 首先我们要安装eslint `npm install eslint --save-dev`                                   
+客户端要做如下的配置（配置文件名为：.eslintrc）：         
+```json
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion":6,
+    "sourceType": "module"
+  },
+  "extends": "airbnb",
+  "rules": {
+    "semi": [0]
+  }
+}
+```
+接下来我们要安装解析模块：   
+
+然后我们还需要在webpack中用eslint-loader来解析代码，在babel编译之前解析：           
+```
+    module: {
+        rules: [
+            {
+                enforce: "pre",
+                test: /.{js|jsx}$/,
+                loader: 'eslint-loader'
+            },
+            {
+                test: /\.jsx?$/,
+                loader: "babel-loader", //具体配置转接到.babelrc文件中去了
+                exclude: /node_modules/ //忽略这个目录下的文件使用
+            },
+            {
+                test:/\.js?&/,//让js文件也能够使用babel，而且不包含node_modules文件下面的js
+                loader: "babel-loader",
+                exclude:[
+                    path.join(__dirname,'../node_modules')
+                ]
+            }
+        ]
+    },
+```
+
 
 

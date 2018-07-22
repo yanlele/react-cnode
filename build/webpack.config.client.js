@@ -17,6 +17,11 @@ const config = {
     module: {
         rules: [
             {
+                enforce: "pre",
+                test: /.{js|jsx}$/,
+                loader: 'eslint-loader'
+            },
+            {
                 test: /\.jsx?$/,
                 loader: "babel-loader", //具体配置转接到.babelrc文件中去了
                 exclude: /node_modules/ //忽略这个目录下的文件使用
